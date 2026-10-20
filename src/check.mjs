@@ -8,7 +8,9 @@ const c = config();
 const browser = await chromium.launch({headless:true});
 let shifts;
 try {
-  const context = await browser.newContext();
+    const context = await browser.newContext({
+        timezoneId: c.timezone
+    });
   const page = await context.newPage();
   await authenticatePage(page,c);
   await page.waitForTimeout(1500);
