@@ -1,0 +1,46 @@
+name: Check shop schedule
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Preview shifts only (no calendar changes or email)'
+        type: boolean
+        default: true
+  schedule:
+    - cron: '17 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: shop-schedule-sync
+  cancel-in-progress: false
+jobs:
+  check:
+    # Automatic runs are OFF by default. Enable after verification by setting
+    # the repo Actions variable SCHEDULE_SYNC_ENABLED to true.
+    if: github.event_name == 'workflow_dispatch' || vars.SCHEDULE_SYNC_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: Check schedule and sync if enabled
+        env:
+          SCHEDULER_EMAIL: ${{ secrets.SCHEDULER_EMAIL }}
+          SCHEDULER_PASSWORD: ${{ secrets.SCHEDULER_PASSWORD }}
+          GOOGLE_SCRIPT_WEBAPP_URL: ${{ secrets.GOOGLE_SCRIPT_WEBAPP_URL }}
+          GOOGLE_SCRIPT_SHARED_SECRET: ${{ secrets.GOOGLE_SCRIPT_SHARED_SECRET }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          TRIGGER: ${{ github.event_name }}
+        shell: bash
+        run: |
+          if [ "$TRIGGER" = "workflow_dispatch" ] && [ "$DRY_RUN" = "true" ]; then
+            npm run check -- --dry-run
+          else
+            npm run check
+          fi

@@ -1,0 +1,15 @@
+{
+  "name": "shop-schedule-sync",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "inspect": "node src/inspect.mjs",
+    "check": "node src/check.mjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "playwright": "^1.55.0",
+    "dotenv": "^16.4.7"
+  }
+}

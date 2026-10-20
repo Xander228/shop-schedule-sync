@@ -1,0 +1,14 @@
+{
+  "siteUrl": "https://scheduler2-0.vercel.app/",
+  "scheduleUrl": "https://scheduler2-0.vercel.app/",
+  "timezone": "America/Los_Angeles",
+  "sourcePage": "My Shifts > Upcoming Shifts",
+  "login": {
+    "url": "https://scheduler2-0.vercel.app/",
+    "emailSelector": "",
+    "passwordSelector": "",
+    "submitSelector": "",
+    "openLoginSelector": "",
+    "successSelector": "text=Sign out"
+  }
+}
